@@ -4,6 +4,8 @@ This repository is prepared to help organize and train your data set for object 
 
 ## Before begin
 
+### Install ultralytics using pip method
+
 You need to install **ultralytics** following this [Quickstart Guide](https://docs.ultralytics.com/quickstart/) and verify it by entering command below.
 ```
 $ python3 -c "import ultralytics; print(ultralytics.__version__)"
@@ -17,13 +19,19 @@ True
 ```
 If nothing works, check what returns ```nvidia-smi```, ```nvcc --version``` and check your device or cuda version is supported by the latest ultralytics. 
 
+### Run ultralytics on Edge devices using docker
+
+
+
 ## Clone this package under workspace folder
 ```
 $ mkdir ~/workspace2;cd ~/workspace2
 $ git clone https://github.com/kyuhyong/yolo_tutorial.git
 ```
 
-## Prepare custom dataset
+## Train model for custom dataset
+
+### Prepare custom dataset
 
 To train custom yolo weight, all images must be saved with labels under datasets.
 
@@ -46,7 +54,7 @@ To train custom yolo weight, all images must be saved with labels under datasets
     │   ├── img_2.txt ...
     ```
 
-## Organize custom dataset
+### Organize custom dataset
 
 1. Run **organize_yolo_dataset.py** under scripts folder with a path to the root directory of your data.
 
@@ -78,7 +86,7 @@ To train custom yolo weight, all images must be saved with labels under datasets
 You can find detailed explanation in this [Dataset Guide](
 https://docs.ultralytics.com/datasets/detect/#adding-your-own-dataset)
 
-## Modify train.yaml
+### Modify train.yaml
 
 The **"train.yaml"** file contains configurations for training dataset. 
  
@@ -91,8 +99,7 @@ The **"train.yaml"** file contains configurations for training dataset.
 | device_cuda | Wheather gpu is used or not | True
 
 
-
-## Train custom dataset
+### Train custom dataset
 
 **Run** train_images.py with path to the dataset.yaml and train.yaml as below example
 ```
@@ -118,6 +125,25 @@ Training completed successfully!
 ```
 As indicated above, all the results will be saved under **"/runs"** with all the reports.
 
-## Deploy inference model
+## Deploying inference model
 
-You can 
+### Export PyTorch model (.pt) optimized for edge devices
+
+The `export.py` script for YOLO models is designed to convert a trained PyTorch model (.pt) into different deployment formats such as:
+
+- **ONNX** (Open Neural Network Exchange)
+- **TensorRT** (for NVIDIA devices)
+- **CoreML** (for Apple devices)
+- **TF.js** (TensorFlow.js for web apps)
+
+https://docs.ultralytics.com/modes/export/
+
+Key Parameters Explained
+- weights: Path to your trained .pt model file.
+- --img_size: The input image size. Keep it consistent with your training size (e.g., 640x640).
+- --format: Specifies the export format:
+    - onnx: Best for cross-platform deployment.
+    - engine: Optimized for TensorRT inference (**recommended** for NVIDIA devices).
+    - torchscript: Efficient format for PyTorch inference.
+    - coreml: For Apple’s CoreML models.
+- --dynamic: Enables dynamic batch size in the exported model (recommended for scalable inference).
